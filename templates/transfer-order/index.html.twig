@@ -1,5 +1,13 @@
 {% extends 'print.html.twig' %}
 
+{% macro contact_info(company) %}
+    {{ company.name }},
+    {{ company.inn }},
+    {{ company.kpp }},
+    {{ company.zipCode }},
+    {{ company.address }}
+{% endmacro %}
+
 {% block meta %}
     <meta name="generator" content="LibreOffice 6.0.7.3 (Linux)"/>
 {% endblock %}
@@ -33,14 +41,14 @@
         <tr valign="top">
             <td width="33%"
                 style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
-                <p>Geesys DTS</p>
+                <p>{{ labelCompany.label }}</p>
             </td>
             <td width="33%"
                 style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.1cm; padding-bottom: 0.1cm; padding-left: 0.1cm; padding-right: 0cm">
-                <p>Поручние №XXXX к Заявке №YYYY</p>
+                <p>Поручение № {{ order.number }} к Заявке №r{{ request.number }}</p>
             </td>
             <td width="33%" style="border: 1px solid #000000; padding: 0.1cm">
-                <p>От 01.01.2018</p>
+                <p>От {{ order.created|date("d.m.Y") }}</p>
             </td>
         </tr>
     </table>
@@ -63,24 +71,11 @@
                     </font>
                     <font color="#000000">
                         <font face="TimesNewRomanPSMT, serif">
-                            <font size="3" style="font-size: 12pt">
-                                <span style="letter-spacing: normal">
-                                    <span style="text-decoration: none">
-                                        <span style="font-weight: normal">
-			</span>
-                                    </span>
-                                </span>
-                            </font>
-                        </font>
-                    </font>
-                    <font color="#000000">
-                        <font face="TimesNewRomanPSMT, serif">
                             <font size="2" style="font-size: 10pt">
                                 <span style="letter-spacing: normal">
                                     <span style="text-decoration: none">
                                         <span style="font-weight: normal">
-                                            ООО «Сила», ИНН 77777777 КПП 777777777, 105111, Москва,
-			Рублевское шоссе,  д.32,к.2, оф.777
+                                            {{ _self.contact_info(order.customer) }}
                                         </span>
                                     </span>
                                 </span>
@@ -127,10 +122,7 @@
                                     <span style="text-decoration: none">
                                         <span
                                                 style="font-weight: normal">
-			ООО «Джи Системс», ИНН 77777777 КПП
-			777777777, 143355, Московская область,
-			Балашихинский район, мкр. Янтарный,
-			ул. Кольцевая, д.10, к.3, оф.2
+			{{ _self.contact_info(order.agent) }}
                                         </span>
                                     </span>
                                 </span>
@@ -166,10 +158,7 @@
                             <font size="2" style="font-size: 10pt">
                                 <span style="letter-spacing: normal">
                                     <span style="text-decoration: none"><span style="font-weight: normal">
-			ООО «Джи Системс», ИНН 77777777 КПП
-			777777777, 143355, Московская область,
-			Балашихинский район, мкр. Янтарный,
-			ул. Кольцевая, д.10, к.3, оф.2
+			{{ _self.contact_info(order.executor) }}
                                         </span>
                                     </span>
                                 </span>

@@ -5,10 +5,11 @@ namespace App\Service;
 
 use Twig\Environment;
 use Symfony\Component\HttpKernel\KernelInterface;
+use App\Entity\TransferOrder;
 
 class TransferOrderService
 {
-    protected $printTpl = 'transfer-order/index.html.twig';
+    protected $printTemplate = 'transfer-order/index.html.twig';
     protected $filePath = "/public/files";
 
     protected $rootDir;
@@ -20,16 +21,17 @@ class TransferOrderService
         $this->twig = $twig;
     }
 
-    public function makePrintView()
+    public function makePrintView(TransferOrder $order)
     {
-        $htmlContent = $this->twig->render($this->printTpl, [
-            'category' => '...',
-            'promotions' => ['...', '...'],
+        $htmlContent = $this->twig->render($this->printTemplate, [
+            'order' => $order,
+            'labelCompany' => $order->getLabelCompany(),
+            'request' => $order->getRequest(),
         ]);
 
         $filePath = $this->getExportPath();
         $r = file_put_contents($filePath, $htmlContent);
-//
+        //
         return $filePath;
     }
 
