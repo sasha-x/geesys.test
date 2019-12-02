@@ -9,35 +9,42 @@ use App\Entity\TransferOrder;
 
 class TransferOrderService
 {
-    protected $printTemplate = 'transfer-order/index.html.twig';
+    protected $docType = 'transfer-order';
+    protected $printTemplate = '/index.html.twig';
     protected $filePath = "/public/files";
 
     protected $rootDir;
     protected $twig;
+    protected $pdfGenerator;
 
-    public function __construct(KernelInterface $kernel, Environment $twig)
+    public function __construct(KernelInterface $kernel, Environment $twig, PdfGenerator $pdfGenerator)
     {
         $this->rootDir = $kernel->getProjectDir();
         $this->twig = $twig;
+        $this->pdfGenerator = $pdfGenerator;
     }
 
     public function makePrintView(TransferOrder $order)
     {
-        $htmlContent = $this->twig->render($this->printTemplate, [
+        $docType = $this->docType;
+        $htmlContent = $this->twig->render($docType . $this->printTemplate, [
             'order' => $order,
             'labelCompany' => $order->getLabelCompany(),
             'request' => $order->getRequest(),
         ]);
 
-        $filePath = $this->getExportPath();
-        $r = file_put_contents($filePath, $htmlContent);
-        //
+        $docNumber = $order->getNumber();
+
+        $filePath = $this->getExportPath() . "/$docType-$docNumber.pdf";
+
+        $this->pdfGenerator->html2pdf($htmlContent, $filePath);
+
         return $filePath;
     }
 
     protected function getExportPath()
     {
-        return $this->rootDir . $this->filePath . "/123.html";
+        return $this->rootDir . $this->filePath;
     }
 
 }
