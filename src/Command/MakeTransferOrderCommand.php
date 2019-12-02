@@ -5,7 +5,7 @@ namespace App\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\Service\TransferOrderService;
+use App\Service\TransferOrder as TransferOrderService;
 use App\Entity\LabelCompany;
 use App\Entity\TransferOrder;
 use App\Entity\TransferRequest;
@@ -28,26 +28,35 @@ class MakeTransferOrderCommand extends Command
     {
         $this
             // the short description shown while running "php bin/console list"
-            ->setDescription('Make a new transfer order.')
+            ->setDescription('Make a new transfer order pdf.')
 
             // the full command description shown when running the command with
             // the "--help" option
-            ->setHelp('Make a new transfer order from input data with default template');
+            ->setHelp('Make a new transfer order pdf from some sample data');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $order = $this->getOrderSample();
 
+        $transferOrderService = $this->transferOrderService;
+        $r = $transferOrderService->setTransferOrderEntity($order)->makePrintView();
 
-        $filePath = $this->transferOrderService->makePrintView($order);
-        $output->writeln("Done: $filePath");
-        return 0;
+        if (!$r) {
+            $msg = "Something went wrong. See logs.";
+        } else {
+            //TODO: return url path instead?
+            $filePath = $transferOrderService->getPrintFilePath();
+            $msg = "Done: $filePath";
+        }
+        $output->writeln($msg);
+        return (int)$r;
     }
 
     protected function getOrderSample()
     {
-        //make example data objects
+        //make example order object
+
         $labelCompany = (new LabelCompany)->setLabel('Geesys DTS');
 
         $request = (new TransferRequest)->setNumber('YYYY');
@@ -72,8 +81,9 @@ class MakeTransferOrderCommand extends Command
               ->setRequest($request)
               ->setAgent($agent)
               ->setCustomer($customer)
-              ->setExecutor($executor)
-              ->setNumber('XXXX');
+              ->setExecutor($executor);
+
+        $order->setNumber('XXXX');
 
         return $order;
     }

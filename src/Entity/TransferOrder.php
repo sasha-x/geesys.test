@@ -1,8 +1,9 @@
 <?php
 
-
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class TransferOrder extends Document
 {
@@ -20,6 +21,15 @@ class TransferOrder extends Document
 
     /** @var TransferRequest */
     private $request;
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('labelCompany', new NotBlank());
+        $metadata->addPropertyConstraint('customer', new NotBlank());
+        $metadata->addPropertyConstraint('agent', new NotBlank());
+        $metadata->addPropertyConstraint('executor', new NotBlank());
+        $metadata->addPropertyConstraint('request', new NotBlank());
+    }
 
     /**
      * @return LabelCompany

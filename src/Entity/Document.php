@@ -1,8 +1,9 @@
 <?php
 
-
 namespace App\Entity;
 
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class Document  extends Entity
 {
@@ -11,6 +12,11 @@ class Document  extends Entity
 
     /** @var int Timestamp */
     private $created;
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('number', new NotBlank());
+    }
 
 
     /**

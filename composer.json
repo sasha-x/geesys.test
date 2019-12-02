@@ -3,15 +3,16 @@
     "license": "proprietary",
     "require": {
         "php": "^7.2.5",
-        "ext-wkhtmltox": "*",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-wkhtmltox": "*",
         "symfony/console": "5.0.*",
         "symfony/dotenv": "5.0.*",
         "symfony/flex": "^1.3.1",
         "symfony/framework-bundle": "5.0.*",
         "symfony/monolog-bundle": "^3.5",
         "symfony/twig-pack": "^1.0",
+        "symfony/validator": "5.0.*",
         "symfony/yaml": "5.0.*"
     },
     "require-dev": {
